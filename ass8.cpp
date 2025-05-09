@@ -1,8 +1,3 @@
-/*************************************************************************
-
-        OBST
-
-**************************************************************************/
 #include<iostream>
 #include<vector>
 #include<climits>
@@ -12,16 +7,14 @@ using namespace std;
 class OBST{
     public :
              
-                vector<string> product;
-                vector<int> p;
-                vector<int> q;
-                vector<vector<int>> w , c , r;
-               
+        vector<string> product;
+        vector<int> p;
+        vector<int> q;
+        vector<vector<int>> w , c , r;
      
-     
-                void accept(); 
-                void create_obst();
-                void display();
+        void accept(); 
+        void create_obst();
+        void display();
 };
 
 void OBST :: accept(){

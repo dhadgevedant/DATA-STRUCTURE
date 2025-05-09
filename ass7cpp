@@ -1,127 +1,126 @@
-/*problem statement */
+/******************************************************************************
+Student Management System (Chaining with Replacement using Hash Table)
+-----------------------------------------------------------------------
+Brief process:
+1. Create a `Student` class to store PRN, Name, Address, and Percentage.
+2. Use two static vectors:
+   - `key`: stores PRNs (keys).
+   `chain`: stores the link for chaining collisions.
+3. Operations:
+   - `create()`: Insert records using linear probing with chaining.
+   - `display()`: Display full table with chain links.
+   - `search()`: Search a record based on PRN.
+   - `remove()`: Delete a record and handle chaining properly.
+4. Hash function: PRN % 10 is used to find index in table.
+*******************************************************************************/
 
-#include<iostream>
-#include<vector>
+#include <iostream>
+#include <vector>
 using namespace std;
 
-class student{
+class Student {
+private:
+    int prn, percentage;
+    string name, address;
 
-    private:
+public:
+    Student() {
+        prn = percentage = 0;
+        name = address = "";
+    }
 
-            int prn , per;           // prn and roll number
-            string name, add;         // name and address
-    public :
-            student(){
-                prn = per = 0;
-                name = add = "-";
-            }
+    static vector<int> key;
+    static vector<int> chain;
 
-            static vector<int> key;
-            static vector<int> chain;
+    void create();
+    void display();
+    void search();
+    void remove();
+} H[10];
 
+// Static member initialization
+vector<int> Student::key(10, -1);
+vector<int> Student::chain(10, -1);
 
-            void create();
-            void display();
-            void modify();
-            void search();
-            void remove();
-
-}H[10];
-
-// Static member definitions
-vector<int> student::key(10, -1);
-vector<int> student::chain(10, -1);
-
-
-
-void student :: create(){
+void Student::create() {
     int n;
-    cout <<  "How many record do you want to insert :";
+    cout << "How many records do you want to insert: ";
     cin >> n;
 
-    for(int i=0; i< n ; i++){
-        student s;
-
-        cout << "Enter the prn number : ";
+    for (int i = 0; i < n; i++) {
+        Student s;
+        cout << "Enter PRN number: ";
         cin >> s.prn;
-        cout << "Enter the percentage : ";
-        cin >> s.per;
-        cout << "Enter the name :";
+        cout << "Enter Percentage: ";
+        cin >> s.percentage;
+        cout << "Enter Name: ";
         cin >> s.name;
-        cout << "Enter the address :";
-        cin >>s.add;
+        cout << "Enter Address: ";
+        cin >> s.address;
 
         int loc = s.prn % 10;
+        int originLoc = loc;
 
-        int origonalloc = loc;
-        
-        while(key[loc] != -1){
-            loc = (loc + 1 ) % 10;
-           
-            if(loc == origonalloc){
-                cout << "Hash table is full.";
-                break;
+        while (key[loc] != -1) {
+            loc = (loc + 1) % 10;
+            if (loc == originLoc) {
+                cout << "Hash table is full." << endl;
+                return;
             }
         }
 
-        
-        if(origonalloc != loc){
-            int temp = origonalloc;
-            while (chain[temp] != -1){
+        if (originLoc != loc) {
+            int temp = originLoc;
+            while (chain[temp] != -1) {
                 temp = chain[temp];
             }
             chain[temp] = loc;
         }
-        
 
         key[loc] = s.prn;
         H[loc] = s;
     }
 }
 
-void student :: search(){
-    int prn;
-    cout<< "Enter the prn no. to search record :";
-    cin >> prn;
-
-    int loc = prn % 10;
-
-   while(key[loc] != prn && loc != -1){
-    loc = chain[loc];
-   }
-
-   if(loc == -1){
-        cout << "Record not found." << endl;
-        return;
-    }
-
-    cout << "\nloc\tprn\tpercentage\tname\taddress\tchain" << endl;
-    cout << loc <<"\t" <<key[loc] << "\t" << H[loc].per << "\t" << H[loc].name << "\t" << H[loc].add << "\t" << chain[loc] << endl;
-}
-
-void student ::display() {
-    cout << "loc\tprn\tpercentage\tname\taddress\tchain" << endl;
-
-    for(int i = 0; i < 10; i++){
-        if(key[i] != -1){
-                cout << i <<"\t" <<key[i] << "\t" << H[i].per << "\t" << H[i].name << "\t" << H[i].add << "\t" << chain[i] << endl;
-        }else{
-            cout << i  << "\t" << key[i] <<"\t-\t-\t-\t"<< chain[i] << endl;
+void Student::display() {
+    cout << "\nLoc\tPRN\tPercentage\tName\tAddress\tChain\n";
+    for (int i = 0; i < 10; i++) {
+        if (key[i] != -1) {
+            cout << i << "\t" << key[i] << "\t" << H[i].percentage << "\t\t" << H[i].name << "\t" << H[i].address << "\t" << chain[i] << endl;
+        } else {
+            cout << i << "\t \t \t\t \t \t" << chain[i] << endl;
         }
     }
 }
 
+void Student::search() {
+    int searchPRN;
+    cout << "Enter the PRN to search: ";
+    cin >> searchPRN;
 
-void student :: remove() {
-    int prn;
-    cout << "Enter the prn no. to delete record: ";
-    cin >> prn;
+    int loc = searchPRN % 10;
 
-    int loc = prn % 10;
+    while (loc != -1 && key[loc] != searchPRN) {
+        loc = chain[loc];
+    }
+
+    if (loc == -1) {
+        cout << "Record not found." << endl;
+    } else {
+        cout << "\nLoc\tPRN\tPercentage\tName\tAddress\tChain\n";
+        cout << loc << "\t" << key[loc] << "\t" << H[loc].percentage << "\t\t" << H[loc].name << "\t" << H[loc].address << "\t" << chain[loc] << endl;
+    }
+}
+
+void Student::remove() {
+    int deletePRN;
+    cout << "Enter the PRN to delete: ";
+    cin >> deletePRN;
+
+    int loc = deletePRN % 10;
     int prevLoc = -1;
 
-    // Search for the record
-    while (key[loc] != prn && loc != -1) {
+    while (loc != -1 && key[loc] != deletePRN) {
         prevLoc = loc;
         loc = chain[loc];
     }
@@ -131,22 +130,19 @@ void student :: remove() {
         return;
     }
 
-    // Remove the record
     key[loc] = -1;
-    H[loc] = student(); // Reset the student object
+    H[loc] = Student(); // Reset to default student
 
-    // add all next record to its appropriate index;
     if (prevLoc != -1) {
-        H[prevLoc] = H[loc];
+        chain[prevLoc] = chain[loc];
     }
-
-   H[prevLoc] = student();
+    chain[loc] = -1;
 
     cout << "Record deleted successfully." << endl;
 }
 
 int main() {
-    student s;
+    Student s;
     int choice;
 
     do {
@@ -176,9 +172,10 @@ int main() {
                 cout << "Exiting program." << endl;
                 break;
             default:
-                cout << "Invalid choice. Please try again." << endl;
+                cout << "Invalid choice! Try again." << endl;
         }
     } while (choice != 5);
 
     return 0;
 }
+

@@ -1,104 +1,112 @@
 /******************************************************************************
 
-problem statement : 
-
-
-create a student management system software application used to  manage the storage 
-and retrieval of student record hash table can be used as a data structure t o efficiently store 
-and retrieve student information. 
-
-
-
+Student Management System (using Hash Table)
+------------------------------------------------
+Brief process:
+1. Create a `student` class to store student details (PRN, Name, Address, Percentage).
+2. Use two vectors:
+    - `mykey` to store PRNs (keys).
+    - `mychain` (not used here meaningfully) - kept as placeholder.
+3. Accept 'n' students and insert them into the hash table using linear probing.
+4. Display the hash table showing PRN, Name, Address, and Percentage for each student.
+5. Hash function: PRN % 10 is used to determine the index.
 
 *******************************************************************************/
+
 #include <iostream>
-#include<vector>
+#include <vector>
 using namespace std;
-class  student{
-    private:
-        string name,add;
-        int prn;
-        int per;
-        // vector to store table;
-        vector<int>mychain;
-        vector<int>mykey;
-        
-        
- public :
-    
-            student(){
-                prn = -1;
-                name = add = "";
-                per = 0;
-                mychain = vector<int>(10, -2);
-                mykey = vector<int>(10, -1);
-            }
-            void table();
-            void accept();
-            
-            
-}H[10];
 
+class Student {
+private:
+    string name, address;
+    int prn, percentage;
+    vector<int> mykey;
+    vector<int> mychain; // Placeholder, not actually used here
 
-  void student :: table() {
-        cout << "\nPRN\tName\t\tAddress\t\tPercentage\n";
-        for (int i = 0; i < 10; i++) {
-            if (mykey[i] != -1) {
-                cout << i << "\t" << H[i].prn << "\t" << H[i].name
-                     << "\t\t" << H[i].add<< "\t\t" << H[i].per << "\n";
-            } else {
-                cout << i << "\t" << "-\t" << "-\t\t" << "-\t\t" << "-" << "\n";
+public:
+    Student() {
+        prn = -1;
+        percentage = 0;
+        name = address = "";
+        mykey = vector<int>(10, -1);
+        mychain = vector<int>(10, -2);
+    }
+
+    void accept();
+    void displayTable();
+} H[10];
+
+void Student::accept() {
+    int n;
+    cout << "Enter the number of records: ";
+    cin >> n;
+
+    for (int i = 0; i < n; i++) {
+        Student s;
+        cout << "\nEnter PRN: ";
+        cin >> s.prn;
+        cout << "Enter Name: ";
+        cin >> s.name;
+        cout << "Enter Address: ";
+        cin >> s.address;
+        cout << "Enter Percentage: ";
+        cin >> s.percentage;
+
+        int index = s.prn % 10;
+        int start = index;
+
+        while (mykey[index] != -1) {
+            index = (index + 1) % 10;
+            if (index == start) {
+                cout << "Hash table is full.\n";
+                return;
             }
         }
+
+        mykey[index] = s.prn;
+        H[index] = s;
     }
-    
-void student :: accept(){
-                
-        
-            int n;
-            cout << "Enter the no of records :";
-            cin >> n;
-                
-            
-            for(int i = 0; i < n; i++){
-                
-                student s;   
-                cout << "\nEnter PRN: ";
-                cin >> s.prn;
-                cout << "Enter Name: ";
-                cin >> s.name;
-                cout << "Enter Address: ";
-                cin >> s.add;
-                cout << "Enter Percentage: ";
-                cin >> s.per;
-                
-                int loc = s.prn % 10;       // hash function
-                
-                int originalloc = loc;
-                
-                while(mykey[loc] != -1){
-                    loc = loc % 10 + 1;
-                    if(loc == originalloc){
-                        cout << "hash table is full..";
-                        return;
-                    }
-                }
-                
-                mykey[loc] = s.prn;
-                H[loc] = s;
-            }
-    }
-                
-
-
-int main()
-{
-    
-    student s;
-   
-    s.accept();
-    s.table();
-    
-
-    return 0;
 }
+
+void Student::displayTable() {
+    cout << "\nIndex\tPRN\tName\t\tAddress\t\tPercentage\n";
+    for (int i = 0; i < 10; i++) {
+        if (mykey[i] != -1) {
+            cout << i << "\t" << H[i].prn << "\t" << H[i].name
+                 << "\t\t" << H[i].address << "\t\t" << H[i].percentage << "\n";
+        } else {
+            cout << i << "\t \t \t\t \t\t \n";
+        }
+    }
+}
+
+int main() {
+    Student s;
+    int choice;
+    do {
+        cout << "\n--- Menu ---\n";
+        cout << "1. Accept Student Details\n";
+        cout << "2. Display Hash Table\n";
+        cout << "3. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                s.accept();
+                break;
+            case 2:
+                s.displayTable();
+                break;
+            case 3:
+                cout << "Exiting...\n";
+                break;
+            default:
+                cout << "Invalid choice. Please try again.\n";
+        }
+    } while (choice != 3);
+    return 0;
+
+}
+
